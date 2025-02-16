@@ -1,0 +1,24 @@
+# TODO
+
+- [ x ] Create Flutter skeleton project
+- [ x ] Create Cursor docs
+-------
+- [ x ] Implement Onboarding Screen
+- [ x ] Implement Login Screen
+- [ x ] Implement Register Screen
+- [ x ] Implement Storage Service Provider (shared preferenced, secure storage)
+- [ x ] Implement Auth Service Provider (login, logout, refresh, verify token)
+- [ x ] Implement Auth Middleware
+-------
+- [  ] Implement Home Screen
+- [  ] Implement Profile Screen
+- [  ] Implement Settings Screen
+- [  ] Implement Profile Service Provider (get profile, update profile)
+-------
+- [  ] Implement History Screen 
+-------
+- [  ] Implement Navigation Screen
+-------
+- [  ] Clean up UI/UX
+- [  ] Refactor code
+- [  ] Add dark mode support
