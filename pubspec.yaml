@@ -1,5 +1,5 @@
 name: yourtour
-description: "A new Flutter project."
+description: "Navigation made fun."
 
 # Prevent accidental publishing to pub.dev.
 publish_to: 'none'
@@ -48,5 +48,4 @@ flutter:
     # Add assets from the images directory to the application.
     - assets/images/
     - assets/images/badges/
-    # Add animations directory
     - assets/animations/
