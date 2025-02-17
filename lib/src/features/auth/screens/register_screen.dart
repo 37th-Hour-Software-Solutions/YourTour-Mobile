@@ -7,6 +7,10 @@ import '../../../core/models/interests.dart';
 import '../../../core/widgets/form_text_field.dart';
 import '../../../core/widgets/form_dropdown.dart';
 import '../../../core/widgets/form_chips.dart';
+import '../../../core/validators/email.dart';
+import '../../../core/validators/username.dart';
+import '../../../core/validators/phone.dart';
+import '../../../core/validators/password.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
   static const String routeName = '/register';
@@ -25,6 +29,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _usernameController = TextEditingController();
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
+
+  final _emailValidator = EmailValidator();
+  final _usernameValidator = UsernameValidator();
+  final _phoneValidator = PhoneValidator();
+  final _passwordValidator = PasswordValidator();
+
   String? _selectedState;
   Set<String> _selectedInterests = {};
   bool _isLoading = false;
@@ -100,8 +110,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 if (value == null || value.isEmpty) {
                   return 'Please enter your email';
                 }
-                if (!value.contains('@')) {
-                  return 'Please enter a valid email';
+                final result = _emailValidator.validate(value);
+                if (!result.isValid) {
+                  return result.exceptions.first.message;
                 }
                 return null;
               },
@@ -114,6 +125,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 if (value == null || value.isEmpty) {
                   return 'Please enter a username';
                 }
+                final result = _usernameValidator.validate(value);
+                if (!result.isValid) {
+                  return result.exceptions.first.message;
+                }
                 return null;
               },
             ),
@@ -122,6 +137,17 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               label: 'Phone',
               icon: Icons.phone_outlined,
               keyboardType: TextInputType.phone,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your phone number';
+                }
+
+                final result = _phoneValidator.validate(value);
+                if (!result.isValid) {
+                  return result.exceptions.first.message;
+                }
+                return null;
+              },
             ),
             FormDropdown(
               value: _selectedState,
@@ -151,8 +177,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 if (value == null || value.isEmpty) {
                   return 'Please enter a password';
                 }
-                if (value.length < 8) {
-                  return 'Password must be at least 8 characters';
+                final result = _passwordValidator.validate(value);
+                if (!result.isValid) {
+                  return result.exceptions.first.message;
                 }
                 return null;
               },

@@ -29,6 +29,7 @@ dependencies:
   text_to_speech: ^0.2.3
   share_plus: ^10.0.0
   path_provider: ^2.1.2
+  lucid_validation: ^1.2.5
 
 dev_dependencies:
   flutter_test:

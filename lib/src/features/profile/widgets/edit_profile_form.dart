@@ -7,6 +7,10 @@ import '../../../core/models/interests.dart';
 import '../../../core/widgets/form_text_field.dart';
 import '../../../core/widgets/form_dropdown.dart';
 import '../../../core/widgets/form_chips.dart';
+import '../../../core/validators/email.dart';
+import '../../../core/validators/username.dart';
+import '../../../core/validators/phone.dart';
+import '../../../core/validators/password.dart';
 
 class EditProfileForm extends ConsumerStatefulWidget {
   const EditProfileForm({super.key});
@@ -22,6 +26,12 @@ class _EditProfileFormState extends ConsumerState<EditProfileForm> {
   late TextEditingController _phoneController;
   late TextEditingController _newPasswordController;
   late TextEditingController _oldPasswordController;
+
+  final _emailValidator = EmailValidator();
+  final _usernameValidator = UsernameValidator();
+  final _phoneValidator = PhoneValidator();
+  final _passwordValidator = PasswordValidator();
+
   String? _selectedState;
   Set<String> _selectedInterests = {};
 
@@ -71,8 +81,9 @@ class _EditProfileFormState extends ConsumerState<EditProfileForm> {
               if (value == null || value.isEmpty) {
                 return 'Please enter your email';
               }
-              if (!value.contains('@')) {
-                return 'Please enter a valid email';
+              final result = _emailValidator.validate(value);
+              if (!result.isValid) {
+                return result.exceptions.first.message;
               }
               return null;
             },
@@ -85,6 +96,10 @@ class _EditProfileFormState extends ConsumerState<EditProfileForm> {
               if (value == null || value.isEmpty) {
                 return 'Please enter a username';
               }
+              final result = _usernameValidator.validate(value);
+              if (!result.isValid) {
+                return result.exceptions.first.message;
+              }
               return null;
             },
           ),
@@ -93,6 +108,16 @@ class _EditProfileFormState extends ConsumerState<EditProfileForm> {
             label: 'Phone',
             icon: Icons.phone_outlined,
             keyboardType: TextInputType.phone,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter your phone number';
+              }
+              final result = _phoneValidator.validate(value);
+              if (!result.isValid) {
+                return result.exceptions.first.message;
+              }
+              return null;
+            },
           ),
           FormDropdown(
             value: _selectedState,
@@ -119,8 +144,11 @@ class _EditProfileFormState extends ConsumerState<EditProfileForm> {
             icon: Icons.lock_outlined,
             obscureText: true,
             validator: (value) {
-              if (value != null && value.isNotEmpty && value.length < 8) {
-                return 'Password must be at least 8 characters';
+              if (value != null && value.isNotEmpty) {
+                final result = _passwordValidator.validate(value);
+                if (!result.isValid) {
+                  return result.exceptions.first.message;
+                }
               }
               return null;
             },
@@ -176,11 +204,15 @@ class _EditProfileFormState extends ConsumerState<EditProfileForm> {
         _oldPasswordController.text
       ).then((_) {
         ref.invalidate(profileProvider);
-        Navigator.pop(context);
+        if (mounted) {
+          Navigator.of(context).pop();
+        }
       }).catchError((error) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(error.toString())),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(error.toString())),
+          );
+        }
       });
     }
   }

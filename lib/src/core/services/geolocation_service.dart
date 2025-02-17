@@ -1,6 +1,4 @@
 import 'package:geolocator/geolocator.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-part 'geolocation_service.g.dart';
 
 class GeolocationService {
   /// Determines if location services are enabled and requests permission if needed.
@@ -105,8 +103,3 @@ class LocationServiceException implements Exception {
   @override
   String toString() => 'LocationServiceException: $message';
 }
-
-@Riverpod(keepAlive: true)
-GeolocationService geolocationService(GeolocationServiceRef ref) {
-  return GeolocationService();
-} 

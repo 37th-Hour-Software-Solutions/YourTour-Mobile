@@ -127,6 +127,24 @@ final secureStorageServiceProvider = Provider<SecureStorageService>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef SecureStorageServiceRef = ProviderRef<SecureStorageService>;
+String _$geolocationServiceHash() =>
+    r'a72daaa082bd8ee2dc4d06d93265496c0debbf06';
+
+/// See also [geolocationService].
+@ProviderFor(geolocationService)
+final geolocationServiceProvider = Provider<GeolocationService>.internal(
+  geolocationService,
+  name: r'geolocationServiceProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$geolocationServiceHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef GeolocationServiceRef = ProviderRef<GeolocationService>;
 String _$currentLocationHash() => r'cfb68afbcbff562ef699a9aaf82d83a109136171';
 
 /// See also [currentLocation].

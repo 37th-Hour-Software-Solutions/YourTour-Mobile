@@ -5,7 +5,7 @@ import 'city_details_modal.dart';
 class CityCard extends StatelessWidget {
   final City city;
 
-  const CityCard({required this.city});
+  const CityCard({super.key, required this.city});
 
   void _showCityDetails(BuildContext context) {
     showModalBottomSheet(
@@ -40,7 +40,7 @@ class CityCard extends StatelessWidget {
                   end: Alignment.bottomCenter,
                   colors: [
                     Colors.transparent,
-                    Colors.black.withOpacity(0.7),
+                    Colors.black.withValues(alpha: 0.7),
                   ],
                 ),
               ),
@@ -64,7 +64,7 @@ class CityCard extends StatelessWidget {
                   Text(
                     city.state,
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.8),
+                      color: Colors.white.withValues(alpha: 0.8),
                       fontSize: 12,
                     ),
                   ),

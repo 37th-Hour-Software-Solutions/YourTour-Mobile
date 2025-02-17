@@ -60,6 +60,11 @@ SecureStorageService secureStorageService(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
+GeolocationService geolocationService(Ref ref) {
+  return GeolocationService();
+}
+
+@Riverpod(keepAlive: true)
 Future<Position?> currentLocation(Ref ref) async {
   final geolocationService = ref.watch(geolocationServiceProvider);
   

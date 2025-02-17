@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/widgets/auth_middleware.dart';
-import '../../../core/services/geolocation_service.dart';
 import '../widgets/map_section.dart';
 import '../widgets/discover_section.dart';
 import '../../../features/profile/screens/profile_screen.dart';
@@ -120,7 +119,7 @@ class _HomeContentState extends ConsumerState<_HomeContent> {
 }
 
 class _HomeTab extends StatelessWidget {
-  const _HomeTab({Key? key}) : super(key: key);
+  const _HomeTab({super.key});
 
   @override
   Widget build(BuildContext context) {

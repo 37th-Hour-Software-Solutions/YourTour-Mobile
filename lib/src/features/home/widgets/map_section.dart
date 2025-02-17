@@ -3,7 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
-import '../../../core/services/geolocation_service.dart';
+import '../../../core/providers/providers.dart';
 
 class MapSection extends ConsumerStatefulWidget {
   const MapSection({super.key});
@@ -76,7 +76,7 @@ class _MapSectionState extends ConsumerState<MapSection> {
                       width: 40,
                       height: 40,
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+                        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
                         shape: BoxShape.circle,
                       ),
                       child: Center(

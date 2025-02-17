@@ -42,7 +42,7 @@ class SharedPreferencesService {
     return _prefs.setDouble(key, value);
   }
 
-  /// Sets a List<String> value in SharedPreferences.
+  /// Sets a List value in SharedPreferences.
   Future<bool> setStringList(String key, List<String> value) async {
     print('Setting $key to $value');
     return _prefs.setStringList(key, value);
@@ -72,7 +72,7 @@ class SharedPreferencesService {
     return _prefs.getDouble(key);
   }
 
-  /// Gets a List<String> value from SharedPreferences.
+  /// Gets a List value from SharedPreferences.
   List<String>? getStringList(String key) {
     print('Getting $key');
     return _prefs.getStringList(key);

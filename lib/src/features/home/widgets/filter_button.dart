@@ -5,7 +5,7 @@ class FilterButton extends StatelessWidget {
   final bool isActive;
   final VoidCallback onPressed;
 
-  const FilterButton({
+  const FilterButton({super.key, 
     required this.label,
     required this.isActive,
     required this.onPressed,

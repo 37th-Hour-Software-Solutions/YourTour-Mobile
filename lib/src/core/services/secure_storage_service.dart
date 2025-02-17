@@ -31,7 +31,7 @@ class SecureStorageService {
     return _storage.write(key: key, value: value.toString());
   }
 
-  /// Sets a List<String> value in secure storage.
+  /// Sets a List value in secure storage.
   Future<void> setStringList(String key, List<String> value) async {
     print('Setting $key to $value');
     return _storage.write(key: key, value: value.join(','));
@@ -46,7 +46,8 @@ class SecureStorageService {
   /// Gets a bool value from secure storage.
   Future<bool?> getBool(String key) async {
     print('Getting $key');
-    return _storage.read(key: key) == 'true';
+    final value = await _storage.read(key: key);
+    return value == 'true';
   }
 
   /// Gets an int value from secure storage.
@@ -63,7 +64,7 @@ class SecureStorageService {
     return value != null ? double.parse(value) : null;
   }
 
-  /// Gets a List<String> value from secure storage.
+  /// Gets a List value from secure storage.
   Future<List<String>?> getStringList(String key) async {
     print('Getting $key');
     final value = await _storage.read(key: key);

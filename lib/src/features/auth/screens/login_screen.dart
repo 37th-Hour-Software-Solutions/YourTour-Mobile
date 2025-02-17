@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/providers/providers.dart';
 import '../../../features/auth/providers/auth_provider.dart';
 import '../../../core/widgets/form_text_field.dart';
+import '../../../core/validators/email.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   static const String routeName = '/login';
@@ -18,6 +19,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+
+  final _emailValidator = EmailValidator();
+
   bool _isLoading = false;
   String? _error;
 
@@ -88,8 +92,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 if (value == null || value.isEmpty) {
                   return 'Please enter your email';
                 }
-                if (!value.contains('@')) {
-                  return 'Please enter a valid email';
+                final result = _emailValidator.validate(value);
+                if (!result.isValid) {
+                  return result.exceptions.first.message;
                 }
                 return null;
               },
@@ -103,9 +108,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 if (value == null || value.isEmpty) {
                   return 'Please enter your password';
                 }
-                if (value.length < 8) {
-                  return 'Password must be at least 8 characters';
-                }
+
+                // we don't care to validate a login password
                 return null;
               },
             ),
