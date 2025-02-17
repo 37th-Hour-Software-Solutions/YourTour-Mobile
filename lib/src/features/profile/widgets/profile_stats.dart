@@ -2,6 +2,13 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import '../models/user.dart';
 import './collection_shelf.dart';
+import './achievement_popup.dart';
+import 'dart:ui';
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:flutter/services.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:path_provider/path_provider.dart';
 
 class ProfileStats extends StatelessWidget {
   final User user;
@@ -86,10 +93,16 @@ class ProfileStats extends StatelessWidget {
             items: user.badges,
             itemBuilder: (badge) => InkWell(
               onTap: () {
-                // Show badge details modal
-                showModalBottomSheet(
+                showDialog(
                   context: context,
-                  builder: (context) => _BadgeDetailsModal(badge: badge),
+                  barrierDismissible: true,
+                  builder: (context) => AchievementPopup(
+                    title: badge['name'] as String,
+                    description: badge['description'] as String,
+                    imagePath: 'assets/images/badges/${badge['static_image_url']}',
+                    animationPath: 'assets/animations/sparkle.json',
+                    onShare: () => _shareBadge(context, badge),
+                  ),
                 );
               },
               child: Card(
@@ -98,7 +111,7 @@ class ProfileStats extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Image.network("http://localhost:3000/${badge['static_image_url']}",
+                      Image.asset('assets/images/badges/${badge['static_image_url']}',
                         height: 60,
                         width: 60,
                       ),
@@ -125,10 +138,15 @@ class ProfileStats extends StatelessWidget {
             items: user.gems,
             itemBuilder: (gem) => InkWell(
               onTap: () {
-                // Show gem details modal
-                showModalBottomSheet(
+                showDialog(
                   context: context,
-                  builder: (context) => _GemDetailsModal(gem: gem),
+                  barrierDismissible: true,
+                  builder: (context) => AchievementPopup(
+                    title: '${gem['city']}, ${gem['state']}',
+                    description: gem['description'] as String,
+                    animationPath: 'assets/animations/gem.json',
+                    onShare: () => _shareGem(context, gem),
+                  ),
                 );
               },
               child: Card(
@@ -190,93 +208,48 @@ class ProfileStats extends StatelessWidget {
       ],
     );
   }
+}
 
-  Widget _buildIconButton({
-    required IconData icon,
-    required String label,
-    String? text,
-    VoidCallback? onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 28),
-            if (text != null) ...[
-              const SizedBox(height: 4),
-              Text(
-                text,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-            const SizedBox(height: 4),
-            Text(label, style: const TextStyle(fontSize: 12)),
-          ],
-        ),
-      ),
+Future<void> _shareBadge(BuildContext context, dynamic badge) async {
+  final box = context.findRenderObject() as RenderBox?;
+  
+  try {
+    // Get the asset bytes
+    final ByteData bytes = await rootBundle.load('assets/images/badges/${badge['static_image_url']}');
+    final Uint8List list = bytes.buffer.asUint8List();
+    // Create temp file
+    final tempDir = await getTemporaryDirectory();
+    final file = File('${tempDir.path}/${badge['static_image_url']}');
+    await file.writeAsBytes(list);
+    // Share the file
+    await Share.shareXFiles(
+      [XFile(file.path)],
+      subject: 'I just earned the ${badge['name']} badge in YourTour!',
+      sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
     );
+  } catch (e) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error sharing badge: $e')),
+      );
+    }
   }
 }
 
-class _BadgeDetailsModal extends StatelessWidget {
-  final Map<String, dynamic> badge;
-
-  const _BadgeDetailsModal({required this.badge});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Image.asset(
-            'assets/images/${badge['static_image_url']}',
-            height: 100,
-            width: 100,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            badge['name'] as String,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            badge['description'] as String,
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
+Future<void> _shareGem(BuildContext context, dynamic gem) async {
+  final box = context.findRenderObject() as RenderBox?;
+  
+  try {
+    await Share.share(
+      'I found a gem in YourTour by visiting ${gem['city']}, ${gem['state']}!',
+      subject: 'I found a new gem in YourTour!',
+      sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
     );
+  } catch (e) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error sharing gem: $e')),
+      );
+    }
   }
 }
-
-class _GemDetailsModal extends StatelessWidget {
-  final Map<String, dynamic> gem;
-
-  const _GemDetailsModal({required this.gem});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '${gem['city']}, ${gem['state']}',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          const SizedBox(height: 16),
-          Text(gem['description'] as String),
-        ],
-      ),
-    );
-  }
-} 

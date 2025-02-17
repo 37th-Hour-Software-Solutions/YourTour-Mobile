@@ -51,12 +51,19 @@ class _ProfileContentState extends ConsumerState<_ProfileContent> with RouteAwar
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
+        automaticallyImplyLeading: false,
+        centerTitle: true,
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {
-              Navigator.pushNamed(context, "/settings");
-            },
+            icon: const Icon(Icons.edit_outlined),
+            onPressed: () => Navigator.pushNamed(context, '/edit_profile'),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: IconButton(
+              icon: const Icon(Icons.settings_outlined),
+              onPressed: () => Navigator.pushNamed(context, '/settings'),
+            ),
           ),
         ],
       ),
@@ -67,8 +74,6 @@ class _ProfileContentState extends ConsumerState<_ProfileContent> with RouteAwar
           padding: const EdgeInsets.all(16),
           children: [
             ProfileStats(user: user),
-            const SizedBox(height: 24),
-            // AchievementSection(user: user),
           ],
         ),
       ),

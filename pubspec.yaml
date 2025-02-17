@@ -27,6 +27,8 @@ dependencies:
   flutter_map: ^8.0.0
   latlong2: ^0.9.1
   text_to_speech: ^0.2.3
+  share_plus: ^10.0.0
+  path_provider: ^2.1.2
 
 dev_dependencies:
   flutter_test:
@@ -45,5 +47,6 @@ flutter:
   assets:
     # Add assets from the images directory to the application.
     - assets/images/
+    - assets/images/badges/
     # Add animations directory
     - assets/animations/

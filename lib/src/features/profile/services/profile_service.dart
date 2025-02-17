@@ -10,26 +10,35 @@ class ProfileService {
 
   Future<User> getUser() async {
     final accessToken = await _secureStorage.getString('accessToken');
-    print("got access token" + accessToken.toString());
     
     try {
-
-      print("getting user");
       final response = await _dio.get('/profile', options: Options(headers: {
         'Authorization': accessToken,
       }));
 
-      print(response.data);
-
       if (response.data['error']) {
-        print(response.data['data']['message']);
         throw Exception(response.data['data']['message']);
       }
 
       return User.fromJson(response.data['data']);
     } on DioException catch (e) {
-      print("error getting user");
       throw Exception(e.response?.data?['data']['message'] ?? 'Failed to fetch user data');
+    }
+  }
+
+  Future<void> updateUser(User user, String password, String oldPassword) async {
+    final accessToken = await _secureStorage.getString('accessToken');
+
+    try {
+      final response = await _dio.post('/profile/update', data: user.toJson(password, oldPassword), options: Options(headers: {
+        'Authorization': accessToken,
+      }));
+
+      if (response.data['error']) {
+        throw Exception(response.data['data']['message']);
+      }
+    } on DioException catch (e) {
+      throw Exception(e.response?.data?['data']['message'] ?? 'Failed to update user data');
     }
   }
 } 

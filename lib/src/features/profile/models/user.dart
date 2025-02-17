@@ -46,4 +46,27 @@ class User {
       statesFound: json['statesFound'],
     );
   }
+
+  Map<String, dynamic> toJson(String password, String oldPassword) {
+
+    if (password == '') {
+      return {
+        'username': username,
+        'email': email,
+        'phone': phone,
+        'homestate': homestate,
+        'interests': interests.map((interest) => interest['name']).toList(),
+      };
+    }
+
+    return {
+      'username': username,
+      'email': email,
+      'phone': phone,
+      'homestate': homestate,
+      'interests': interests.map((interest) => interest['name']).toList(),
+      'password': password,
+      'oldPassword': oldPassword,
+    };
+  }
 } 

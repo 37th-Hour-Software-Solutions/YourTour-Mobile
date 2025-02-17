@@ -5,6 +5,9 @@ import '../../../core/services/geolocation_service.dart';
 import '../widgets/map_section.dart';
 import '../widgets/discover_section.dart';
 import '../../../features/profile/screens/profile_screen.dart';
+import '../../../core/providers/providers.dart';
+
+final homeTabProvider = StateProvider<int>((ref) => 0);
 
 class HomeScreen extends ConsumerWidget {
   static const routeName = '/home';
@@ -68,20 +71,37 @@ class _HomeContentState extends ConsumerState<_HomeContent> {
     }
 
     return Scaffold(
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 200),
-        child: _buildCurrentTab(),
+      body: IndexedStack(
+        index: _currentIndex,
+        children: const [
+          _HomeTab(key: PageStorageKey('home')),
+          Center(
+            key: PageStorageKey('search'),
+            child: Text('Search coming soon!'),
+          ),
+          Center(
+            key: PageStorageKey('history'),
+            child: Text('History'),
+          ),
+          _ProfileTab(key: PageStorageKey('profile')),
+        ],
       ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
         onDestinationSelected: (index) {
           setState(() => _currentIndex = index);
+          ref.read(homeTabProvider.notifier).state = index;
         },
         destinations: const [
           NavigationDestination(
             icon: Icon(Icons.home_outlined),
             selectedIcon: Icon(Icons.home),
             label: 'Home',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.search_outlined),
+            selectedIcon: Icon(Icons.search),
+            label: 'Search',
           ),
           NavigationDestination(
             icon: Icon(Icons.history_outlined),
@@ -97,23 +117,10 @@ class _HomeContentState extends ConsumerState<_HomeContent> {
       ),
     );
   }
-
-  Widget _buildCurrentTab() {
-    switch (_currentIndex) {
-      case 0:
-        return const _HomeTab();
-      case 1:
-        return const Center(child: Text('History'));
-      case 2:
-        return const ProfileScreen();
-      default:
-        return const SizedBox.shrink();
-    }
-  }
 }
 
 class _HomeTab extends StatelessWidget {
-  const _HomeTab();
+  const _HomeTab({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -122,6 +129,7 @@ class _HomeTab extends StatelessWidget {
         SliverAppBar(
           title: Text('YourTour'),
           floating: true,
+          automaticallyImplyLeading: false,
         ),
         SliverToBoxAdapter(
           child: MapSection(),
@@ -215,4 +223,20 @@ class _LocationPermissionDialog extends ConsumerWidget {
       ],
     );
   }
-} 
+}
+
+class _ProfileTab extends ConsumerWidget {
+  const _ProfileTab({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentTab = ref.watch(homeTabProvider);
+    
+    // Refresh profile when tab becomes active
+    if (currentTab == 3) {
+      ref.invalidate(profileProvider);
+    }
+
+    return const ProfileScreen();
+  }
+}

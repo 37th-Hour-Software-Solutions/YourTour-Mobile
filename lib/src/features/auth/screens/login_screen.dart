@@ -3,6 +3,7 @@ import '../models/login_request.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/providers/providers.dart';
 import '../../../features/auth/providers/auth_provider.dart';
+import '../../../core/widgets/form_text_field.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   static const String routeName = '/login';
@@ -43,7 +44,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       );
 
       if (!mounted) return;
-      Navigator.pushReplacementNamed(context, "/home");
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        "/home",
+        (route) => false,
+      );
     } catch (e) {
       setState(() {
         _error = e.toString();
@@ -67,18 +72,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Login'),
+        centerTitle: true,
       ),
       body: Form(
         key: _formKey,
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            TextFormField(
+            FormTextField(
               controller: _emailController,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(),
-              ),
+              label: 'Email',
+              icon: Icons.email_outlined,
               keyboardType: TextInputType.emailAddress,
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -90,13 +94,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 return null;
               },
             ),
-            const SizedBox(height: 16),
-            TextFormField(
+            FormTextField(
               controller: _passwordController,
-              decoration: const InputDecoration(
-                labelText: 'Password',
-                border: OutlineInputBorder(),
-              ),
+              label: 'Password',
+              icon: Icons.lock_outlined,
               obscureText: true,
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -118,10 +119,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               ),
             ],
             const SizedBox(height: 32),
-            SizedBox(
-              height: 50,
-              child: ElevatedButton(
-                onPressed: _isLoading ? null : _login,
+            FilledButton(
+              onPressed: _isLoading ? null : _login,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
                 child: _isLoading
                     ? const CircularProgressIndicator()
                     : const Text('Login'),

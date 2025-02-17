@@ -11,7 +11,9 @@ import 'features/auth/screens/register_screen.dart';
 import 'core/providers/providers.dart';
 import 'features/home/screens/home_screen.dart';
 import 'features/profile/screens/profile_screen.dart';
+import 'features/profile/screens/edit_profile_screen.dart';
 import 'features/profile/screens/settings_screen.dart';
+import 'core/services/shared_preferences_service.dart';
 
 /// The Widget that configures your application.
 class MyApp extends ConsumerWidget {
@@ -64,7 +66,7 @@ class MyApp extends ConsumerWidget {
         themeMode: settingsController.themeMode,
 
         // Check if user has completed onboarding to determine initial route
-        initialRoute: prefs.getBool('has_compl22eted_onboarding') == true
+        initialRoute: prefs.getBool(SharedPreferencesService.keyCompletedOnboarding) == true
             ? Sample.routeName 
             : OnboardingScreen.routeName,
 
@@ -74,6 +76,7 @@ class MyApp extends ConsumerWidget {
           RegisterScreen.routeName: (context) => const RegisterScreen(),
           HomeScreen.routeName: (context) => const HomeScreen(),
           ProfileScreen.routeName: (context) => const ProfileScreen(),
+          EditProfileScreen.routeName: (context) => const EditProfileScreen(),
           SettingsScreen.routeName: (context) => const SettingsScreen(),
         },
         navigatorObservers: [MyApp.routeObserver],

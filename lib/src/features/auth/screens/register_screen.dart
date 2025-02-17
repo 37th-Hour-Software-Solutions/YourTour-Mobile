@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import '../models/register_request.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/models/states.dart';
+import '../../../core/models/interests.dart';
+import '../../../core/widgets/form_text_field.dart';
+import '../../../core/widgets/form_dropdown.dart';
+import '../../../core/widgets/form_chips.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
   static const String routeName = '/register';
@@ -18,20 +23,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _usernameController = TextEditingController();
-  final _passwordController = TextEditingController();
   final _phoneController = TextEditingController();
-  String _selectedState = 'NY';
-  final List<String> _selectedInterests = [];
+  final _passwordController = TextEditingController();
+  String? _selectedState;
+  Set<String> _selectedInterests = {};
   bool _isLoading = false;
   String? _error;
-
-  static const List<String> _states = ['NY', 'CA', 'TX', 'FL']; // Add more
-  static const List<String> _interests = [
-    'kayaking', 'fishing', 'movies', 'tech', 'history',
-    'music', 'food',' solo travel', 'animals',' cross country', 'live events',
-    'hiking', 'working out', 'community culture', 'geography', 'sports', 'weather',
-    'entertainment'
-  ];
 
   Future<void> _register() async {
     if (!_formKey.currentState!.validate()) return;
@@ -55,8 +52,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           username: _usernameController.text,
           password: _passwordController.text,
           phone: _phoneController.text,
-          homestate: _selectedState,
-          interests: _selectedInterests,
+          homestate: _selectedState!,
+          interests: _selectedInterests.toList(),
         ),
       );
 
@@ -86,19 +83,18 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Register'),
+        title: const Text('Create Account'),
+        centerTitle: true,
       ),
       body: Form(
         key: _formKey,
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            TextFormField(
+            FormTextField(
               controller: _emailController,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(),
-              ),
+              label: 'Email',
+              icon: Icons.email_outlined,
               keyboardType: TextInputType.emailAddress,
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -110,13 +106,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 return null;
               },
             ),
-            const SizedBox(height: 16),
-            TextFormField(
+            FormTextField(
               controller: _usernameController,
-              decoration: const InputDecoration(
-                labelText: 'Username',
-                border: OutlineInputBorder(),
-              ),
+              label: 'Username',
+              icon: Icons.person_outline,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter a username';
@@ -124,13 +117,35 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 return null;
               },
             ),
-            const SizedBox(height: 16),
-            TextFormField(
+            FormTextField(
+              controller: _phoneController,
+              label: 'Phone',
+              icon: Icons.phone_outlined,
+              keyboardType: TextInputType.phone,
+            ),
+            FormDropdown(
+              value: _selectedState,
+              label: 'Home State',
+              icon: Icons.location_on_outlined,
+              items: states,
+              onChanged: (value) => setState(() => _selectedState = value),
+              validator: (value) {
+                if (value == null) {
+                  return 'Please select your home state';
+                }
+                return null;
+              },
+            ),
+            FormChips(
+              label: 'Interests',
+              options: interests,
+              selectedValues: _selectedInterests,
+              onChanged: (values) => setState(() => _selectedInterests = values),
+            ),
+            FormTextField(
               controller: _passwordController,
-              decoration: const InputDecoration(
-                labelText: 'Password',
-                border: OutlineInputBorder(),
-              ),
+              label: 'Password',
+              icon: Icons.lock_outlined,
               obscureText: true,
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -142,61 +157,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 return null;
               },
             ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _phoneController,
-              decoration: const InputDecoration(
-                labelText: 'Phone',
-                border: OutlineInputBorder(),
-              ),
-              keyboardType: TextInputType.phone,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter your phone number';
-                }
-                // Add phone validation if needed
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<String>(
-              value: _selectedState,
-              decoration: const InputDecoration(
-                labelText: 'Home State',
-                border: OutlineInputBorder(),
-              ),
-              items: _states.map((state) {
-                return DropdownMenuItem(
-                  value: state,
-                  child: Text(state),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  _selectedState = value!;
-                });
-              },
-            ),
-            const SizedBox(height: 16),
-            const Text('Interests'),
-            Wrap(
-              spacing: 8,
-              children: _interests.map((interest) {
-                return FilterChip(
-                  label: Text(interest),
-                  selected: _selectedInterests.contains(interest),
-                  onSelected: (selected) {
-                    setState(() {
-                      if (selected) {
-                        _selectedInterests.add(interest);
-                      } else {
-                        _selectedInterests.remove(interest);
-                      }
-                    });
-                  },
-                );
-              }).toList(),
-            ),
             if (_error != null) ...[
               const SizedBox(height: 16),
               Text(
@@ -207,21 +167,21 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               ),
             ],
             const SizedBox(height: 32),
-            SizedBox(
-              height: 50,
-              child: ElevatedButton(
-                onPressed: _isLoading ? null : _register,
+            FilledButton(
+              onPressed: _isLoading ? null : _register,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
                 child: _isLoading
                     ? const CircularProgressIndicator()
-                    : const Text('Register'),
+                    : const Text('Create Account'),
               ),
             ),
             const SizedBox(height: 16),
             TextButton(
               onPressed: () {
-                Navigator.pushReplacementNamed(context, '/login');
+                Navigator.pop(context);
               },
-              child: const Text('Already have an account? Sign in'),
+              child: const Text('Already have an account? Login'),
             ),
           ],
         ),
