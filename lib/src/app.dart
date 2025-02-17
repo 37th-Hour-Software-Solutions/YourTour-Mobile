@@ -65,11 +65,6 @@ class MyApp extends ConsumerWidget {
         darkTheme: ThemeData.dark(),
         themeMode: settingsController.themeMode,
 
-        // Check if user has completed onboarding to determine initial route
-        initialRoute: prefs.getBool(SharedPreferencesService.keyCompletedOnboarding) == true
-            ? Sample.routeName 
-            : OnboardingScreen.routeName,
-
         routes: {
           OnboardingScreen.routeName: (context) => const OnboardingScreen(),
           LoginScreen.routeName: (context) => const LoginScreen(),
@@ -79,6 +74,12 @@ class MyApp extends ConsumerWidget {
           EditProfileScreen.routeName: (context) => const EditProfileScreen(),
           SettingsScreen.routeName: (context) => const SettingsScreen(),
         },
+
+        // Check if user has completed onboarding to determine initial route
+        initialRoute: prefs.getBool(SharedPreferencesService.keyCompletedOnboarding) == true
+            ? "/home"
+            : "/onboarding",
+
         navigatorObservers: [MyApp.routeObserver],
       ),
     );
