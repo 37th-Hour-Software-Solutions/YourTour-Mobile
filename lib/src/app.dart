@@ -9,9 +9,14 @@ import 'features/onboarding/screens/onboarding_screen.dart';
 import 'features/auth/screens/login_screen.dart';
 import 'features/auth/screens/register_screen.dart';
 import 'core/providers/providers.dart';
+import 'features/home/screens/home_screen.dart';
+import 'features/profile/screens/profile_screen.dart';
+import 'features/profile/screens/settings_screen.dart';
 
 /// The Widget that configures your application.
 class MyApp extends ConsumerWidget {
+  static final routeObserver = RouteObserver<ModalRoute<void>>();
+  
   const MyApp({
     super.key,
     required this.settingsController,
@@ -67,8 +72,11 @@ class MyApp extends ConsumerWidget {
           OnboardingScreen.routeName: (context) => const OnboardingScreen(),
           LoginScreen.routeName: (context) => const LoginScreen(),
           RegisterScreen.routeName: (context) => const RegisterScreen(),
-          Sample.routeName: (context) => const Sample(),
+          HomeScreen.routeName: (context) => const HomeScreen(),
+          ProfileScreen.routeName: (context) => const ProfileScreen(),
+          SettingsScreen.routeName: (context) => const SettingsScreen(),
         },
+        navigatorObservers: [MyApp.routeObserver],
       ),
     );
   }

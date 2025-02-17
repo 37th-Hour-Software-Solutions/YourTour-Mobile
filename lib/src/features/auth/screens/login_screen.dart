@@ -43,7 +43,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       );
 
       if (!mounted) return;
-      Navigator.pushNamed(context, '/sample');
+      Navigator.pushReplacementNamed(context, "/home");
     } catch (e) {
       setState(() {
         _error = e.toString();

@@ -23,6 +23,10 @@ dependencies:
   flutter_riverpod: ^2.5.1
   riverpod: ^2.5.1
   riverpod_annotation: ^2.3.5
+  geolocator: ^10.0.0
+  flutter_map: ^8.0.0
+  latlong2: ^0.9.1
+  text_to_speech: ^0.2.3
 
 dev_dependencies:
   flutter_test:

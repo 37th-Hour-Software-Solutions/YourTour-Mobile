@@ -26,7 +26,7 @@
     - Makes an API call to register and if successful, redirects to the login screen.
     - If the registration is unsuccessful, show the error message.
 
-- Home Screen (authenticated): Shows (1) a map which when tapped, redirects to the Navigation Screen. (2) "Discover" section which shows tiles of nearby cities and tapping opens a modal with information about the city.
+- Home Screen (authenticated): Shows (1) a map which when tapped, redirects to the Navigation Screen. (2) "Discover" section which shows tiles of nearby cities and tapping opens a modal with information about the city. Should also have a bottom navigation bar with the following tabs (and icons): (1) Home (2) History (3) Profile.
 
 - Navigation Screen (authenticated): The core of the app. Similar to Apple Maps, the user can pan and zoom the map. The map is centered on the user's current location. There is a search bar at the top which allows the user to search for a city. Upon selecting a location, a modal pops up with information about the upcoming trip (miles, estimated time, etc. and a "Start" button). The "Start" button will make API calls to get the the route.
     - The map should follow the user's current location and update the map as the user moves.

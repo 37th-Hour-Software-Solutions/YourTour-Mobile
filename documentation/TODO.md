@@ -11,6 +11,7 @@
 - [ x ] Implement Auth Middleware
 -------
 - [  ] Implement Home Screen
+-------
 - [  ] Implement Profile Screen
 - [  ] Implement Settings Screen
 - [  ] Implement Profile Service Provider (get profile, update profile)
