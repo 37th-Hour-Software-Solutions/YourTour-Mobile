@@ -19,7 +19,7 @@ final offlineMapsProvider = StateProvider<bool>((ref) => false);
 
 class SettingsScreen extends StatelessWidget {
   static const routeName = '/settings';
-
+  
   const SettingsScreen({super.key});
 
   @override

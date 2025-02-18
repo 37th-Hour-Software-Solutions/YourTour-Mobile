@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../widgets/profile_stats.dart';
 import '../../../core/providers/providers.dart';
 import '../../../app.dart';
-import '../../../core/widgets/auth_middleware.dart';
 
 class ProfileScreen extends ConsumerWidget {
   static const routeName = '/profile';
@@ -11,9 +10,7 @@ class ProfileScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const AuthMiddleware(
-      child: _ProfileContent(),
-    );
+    return const _ProfileContent();
   }
 }
 

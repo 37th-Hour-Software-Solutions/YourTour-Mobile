@@ -30,7 +30,7 @@ class _HomeContent extends ConsumerStatefulWidget {
 
 class _HomeContentState extends ConsumerState<_HomeContent> {
   int _currentIndex = 0;
-  bool _hasCheckedPermission = false;
+  bool _isCheckingPermission = true;
 
   @override
   void initState() {
@@ -39,14 +39,28 @@ class _HomeContentState extends ConsumerState<_HomeContent> {
   }
 
   Future<void> _checkLocationPermission() async {
-    final geolocationService = ref.read(geolocationServiceProvider);
-    final hasPermission = await geolocationService.requestLocationPermission();
-    
     if (!mounted) return;
-    setState(() => _hasCheckedPermission = true);
+    
+    final geolocationService = ref.read(geolocationServiceProvider);
+    
+    try {
+      final hasPermission = await geolocationService.requestLocationPermission();
+      
+      if (mounted) {
+        setState(() {
+          _isCheckingPermission = false;
+        });
+      }
 
-    if (!hasPermission) {
-      _showPermissionDeniedDialog();
+      if (!hasPermission && mounted) {
+        _showPermissionDeniedDialog();
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isCheckingPermission = false;
+        });
+      }
     }
   }
 
@@ -65,10 +79,13 @@ class _HomeContentState extends ConsumerState<_HomeContent> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_hasCheckedPermission) {
+
+    // Check if we've already asked for permission
+    if (_isCheckingPermission) {
       return const _LocationPermissionRequest();
     }
-
+    
+    // Otherwise, we've prompted and they've granted permission
     return Scaffold(
       body: IndexedStack(
         index: _currentIndex,

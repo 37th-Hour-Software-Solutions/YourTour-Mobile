@@ -18,7 +18,7 @@ part 'providers.g.dart';
 @riverpod
 Dio dio(Ref ref) {
   return Dio(BaseOptions(
-    baseUrl: 'http://localhost:3000',  // Replace with your API URL
+    baseUrl: 'http://192.168.1.221:3000',  // Replace with your API URL
     contentType: 'application/json',
   ));
 }

@@ -66,7 +66,7 @@ class _MapSectionState extends ConsumerState<MapSection> {
             children: [
               TileLayer(
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                userAgentPackageName: 'com.yourtour.app',
+                userAgentPackageName: 'pw.landon.yourtour',
               ),
               MarkerLayer(
                 markers: [

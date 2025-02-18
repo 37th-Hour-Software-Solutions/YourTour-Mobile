@@ -16,6 +16,8 @@ class AuthMiddleware extends ConsumerStatefulWidget {
 }
 
 class _AuthMiddlewareState extends ConsumerState<AuthMiddleware> {
+  bool _hasCheckedAuth = false;
+
   @override
   void initState() {
     super.initState();
@@ -27,27 +29,38 @@ class _AuthMiddlewareState extends ConsumerState<AuthMiddleware> {
 
   @override
   Widget build(BuildContext context) {
-    return ref.watch(authProvider).when(
-      loading: () => const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      ),
-      error: (_, __) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
+    ref.listen(authProvider, (previous, next) {
+      next.whenData((isAuthenticated) {
+        if (!isAuthenticated && !_hasCheckedAuth && mounted) {
+          _hasCheckedAuth = true;
           Navigator.pushReplacementNamed(context, LoginScreen.routeName);
-        });
-        return const SizedBox.shrink();
-      },
-      data: (isAuthenticated) {
-        if (!isAuthenticated) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.pushReplacementNamed(context, LoginScreen.routeName);
-          });
-          return const SizedBox.shrink();
         }
-        return widget.child;
-      },
-    );
+      });
+    });
+
+    return widget.child;
   }
+  //   return ref.watch(authProvider).when(
+  //     loading: () => const Scaffold(
+  //       body: Center(
+  //         child: CircularProgressIndicator(),
+  //       ),
+  //     ),
+  //     error: (_, __) {
+  //       WidgetsBinding.instance.addPostFrameCallback((_) {
+  //         Navigator.pushReplacementNamed(context, LoginScreen.routeName);
+  //       });
+  //       return const SizedBox.shrink();
+  //     },
+  //     data: (isAuthenticated) {
+  //       if (!isAuthenticated) {
+  //         WidgetsBinding.instance.addPostFrameCallback((_) {
+  //           Navigator.pushReplacementNamed(context, LoginScreen.routeName);
+  //         });
+  //         return const SizedBox.shrink();
+  //       }
+  //       return widget.child;
+  //     },
+  //   );
+  // }
 } 

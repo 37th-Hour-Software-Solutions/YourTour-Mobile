@@ -5,7 +5,7 @@ import '../../../core/widgets/auth_middleware.dart';
 
 class EditProfileScreen extends ConsumerWidget {
   static const routeName = '/edit_profile';
-
+  
   const EditProfileScreen({super.key});
 
   @override

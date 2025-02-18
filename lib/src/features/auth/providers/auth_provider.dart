@@ -12,7 +12,7 @@ class Auth extends _$Auth {
 
   Future<bool> _checkAuth() async {
     final storage = ref.read(secureStorageServiceProvider);
-    final token = await storage.getString('access_token');
+    final token = await storage.getString('accessToken');
     if (token == null) return false;
 
     try {
@@ -20,23 +20,23 @@ class Auth extends _$Auth {
       await authService.verifyToken(token);
       return true;
     } catch (e) {
-      await storage.remove('access_token');
-      await storage.remove('refresh_token');
+      await storage.remove('accessToken');
+      await storage.remove('refreshToken');
       return false;
     }
   }
 
   Future<void> login(String accessToken, String refreshToken) async {
     final storage = ref.read(secureStorageServiceProvider);
-    await storage.setString('access_token', accessToken);
-    await storage.setString('refresh_token', refreshToken);
+    await storage.setString('accessToken', accessToken);
+    await storage.setString('refreshToken', refreshToken);
     state = const AsyncValue.data(true);
   }
 
   Future<void> logout() async {
     final storage = ref.read(secureStorageServiceProvider);
-    await storage.remove('access_token');
-    await storage.remove('refresh_token');
+    await storage.remove('accessToken');
+    await storage.remove('refreshToken');
     state = const AsyncValue.data(false);
   }
 

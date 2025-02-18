@@ -5,6 +5,7 @@ import 'package:confetti/confetti.dart';
 import '../models/onboarding_item.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/providers/providers.dart';
+import '../../../core/services/shared_preferences_service.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   static const String routeName = '/onboarding';
@@ -54,7 +55,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   void _completeOnboarding() async {
     final prefs = await ref.read(sharedPreferencesServiceProvider.future);
-    await prefs.setBool('has_completed_onboarding', true);
+    await prefs.setBool(SharedPreferencesService.keyCompletedOnboarding, true);
     if (!mounted) return;
   }
 
